@@ -1,0 +1,51 @@
+name: Update daily prices and deploy
+on:
+  schedule:
+    - cron: '30 7 * * 1-5'
+    - cron: '30 22 * * 1-5'
+  workflow_dispatch:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: stock-research-pages
+  cancel-in-progress: false
+jobs:
+  update-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install yfinance==0.2.66
+      - name: Update real daily prices
+        continue-on-error: true
+        run: python scripts/update_quotes.py
+      - name: Save quotes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/quotes.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Update daily price snapshots"
+            git push
+          fi
+      - uses: actions/configure-pages@v5
+      - name: Prepare public files
+        run: |
+          mkdir _site
+          cp index.html app.js styles.css sw.js manifest.json .nojekyll _site/
+          cp -r icons data _site/
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
