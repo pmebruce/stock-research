@@ -5,6 +5,7 @@ import time
 from pathlib import Path
 from datetime import datetime, timezone
 import yfinance as yf
+from zoneinfo import ZoneInfo
 ROOT = Path(__file__).resolve().parents[1]
 path = ROOT / 'data/quotes.json'
 data = json.loads(path.read_text()) if path.exists() else {'quotes': {}}
@@ -16,7 +17,12 @@ for key in symbols:
     for ticker in candidates:
         try:
             history = yf.Ticker(ticker).history(period='6mo', auto_adjust=False)
-            rows = [(date, float(value)) for date, value in history['Close'].items() if math.isfinite(value) and value > 0]
+            zone = ZoneInfo('Asia/Taipei' if market == 'TW' else 'America/New_York')
+            now = datetime.now(zone)
+            closing_minutes = 13 * 60 + 30 if market == 'TW' else 16 * 60
+            rows = [(date, float(value)) for date, value in history['Close'].items()
+                    if math.isfinite(value) and value > 0
+                    and not (date.date() == now.date() and now.hour * 60 + now.minute < closing_minutes)]
             if len(rows) < 60:
                 continue
             data['quotes'][key] = {'prices': [round(v, 6) for _, v in rows[-120:]], 'asOf': rows[-1][0].strftime('%Y-%m-%d'), 'source': 'Yahoo 日K', 'updatedAt': datetime.now(timezone.utc).isoformat()}
