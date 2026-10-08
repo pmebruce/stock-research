@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0f1419" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" href="./icons/icon.svg" />
+  <link rel="stylesheet" href="./styles.css" />
+  <title>stock-research</title>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>持股／觀察名單研究台</h1>
+      <p class="sub">收盤後技術分析卡。指標在本機計算，清單存在這台瀏覽器。這是研究輔助，不是投資建議。</p>
+    </div>
+    <button id="install" class="ghost" hidden>安裝到桌面</button>
+  </header>
+  <main>
+    <section class="panel">
+      <strong>新增標的</strong>
+      <div class="row">
+        <div>
+          <label>市場</label>
+          <select id="market"><option value="TW">台股</option><option value="US">美股</option></select>
+        </div>
+        <div>
+          <label>類型</label>
+          <select id="kind"><option value="watch">觀察</option><option value="hold">持股</option></select>
+        </div>
+      </div>
+      <label>代號</label>
+      <input id="symbol" placeholder="2330 或 AAPL" />
+      <div class="row">
+        <div><label>股數</label><input id="shares" type="number" value="0" /></div>
+        <div><label>成本</label><input id="cost" type="number" value="0" /></div>
+      </div>
+      <label>筆記</label>
+      <textarea id="note" rows="2" placeholder="你的假設"></textarea>
+      <div class="row" style="margin-top:8px">
+        <button id="add">加入並分析</button>
+        <button id="reset" class="ghost">還原範例</button>
+      </div>
+      <div id="list" class="list"></div>
+    </section>
+    <section id="detail" class="cards"></section>
+  </main>
+  <script src="./app.js"></script>
+</body>
+</html>

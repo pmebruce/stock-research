@@ -1,0 +1,11 @@
+{
+  "name": "stock-research",
+  "short_name": "stock-research",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0f1419",
+  "theme_color": "#0f1419",
+  "lang": "zh-Hant",
+  "icons": [{"src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml"}]
+}
