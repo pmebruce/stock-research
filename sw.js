@@ -1,5 +1,5 @@
-const CACHE = 'research-desk-v3';
-const ASSETS = ['./index.html', './styles.css', './app.js', './manifest.json', './icons/icon.svg'];
+const CACHE = 'research-desk-v4';
+const ASSETS = ['./index.html', './styles.css', './app.js', './indicators.js', './manifest.json', './icons/icon.svg'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)));
   self.skipWaiting();
